@@ -1,0 +1,71 @@
+/* Tailwind Directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+  CRITICAL FIX: Global Reset for Full Screen and No Scrollbar
+  Yeh saare elements ki margin aur padding zero karta hai aur
+  html, body, aur #root ko poori screen height deta hai.
+*/
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  /* Poori viewport height dein */
+  height: 100%; 
+  /* Scrollbar ko hataayein. Agar content fit nahi ho raha toh yeh galti Login.jsx mein hogi */
+  overflow: hidden; 
+}
+
+
+/* Existing Global Settings (Dark Theme base) */
+:root {
+  /* Set background-color to match the dark theme */
+  background-color: #121212; 
+  color: rgba(255, 255, 255, 0.87);
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Neon Glow Styles */
+.neon-text {
+  color: #00f0ff;
+  /* text-shadow: 0 0 5px #00f0ff, 0 0 10px #00f0ff, 0 0 20px #00f0ff; */
+}
+
+.neon-bg {
+  background: linear-gradient(135deg, #0f0f0f, #1a1a2e);
+}
+
+.neon-blue {
+  color: #00f0ff;
+}
+
+.neon-pink {
+  color: #ff0080;
+}
+
+
+/* Neon glow cards */
+.neon-card {
+  background: rgba(0, 0, 0, 0.5);
+  border: 2px solid #00f0ff;
+  border-radius: 1rem;
+  box-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff;
+  padding: 2rem;
+  transition: transform 0.3s;
+}
+
+.neon-card:hover {
+  transform: translateY(-10px) scale(1.05);
+}
