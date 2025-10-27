@@ -1,4 +1,4 @@
-// backend/server.js (Production-ready, CORS & session fixed)
+// backend/server.js
 
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -34,19 +34,19 @@ const __dirname = path.dirname(__filename);
 const allowedOrigins = [
     "http://localhost:5173", // Local dev
     "http://127.0.0.1:5173", // Local dev alternate
-    process.env.FRONTEND_URL // Production frontend (Vercel)
+    process.env.FRONTEND_URL // Production frontend
 ];
 
 app.use(cors({
     origin: (origin, callback) => {
         if (!origin) return callback(null, true); // Postman / curl requests
-        if (allowedOrigins.indexOf(origin) === -1) {
+        if (!allowedOrigins.includes(origin)) {
             return callback(new Error("CORS policy does not allow access from this origin"), false);
         }
         return callback(null, true);
     },
-    credentials: true, // Important for cookies & Google Auth
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    credentials: true, // Required for cookies & Google Auth
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
 }));
 
 // Middleware
@@ -83,17 +83,17 @@ app.use("/api/notifications", notificationRoutes);
 // Test route
 app.get("/", (req, res) => res.send("Server is running fine ✅"));
 
-// --- Error Handling ---
+// --- Handle 404
 app.use((req, res, next) => {
     const error = new Error(`Route Not Found - ${req.originalUrl}`);
     res.status(404);
     next(error);
 });
 
+// --- Global Error Handler
 app.use((err, req, res, next) => {
     const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
-    res.status(statusCode);
-    res.json({
+    res.status(statusCode).json({
         message: err.message,
         stack: process.env.NODE_ENV === "production" ? null : err.stack,
     });
