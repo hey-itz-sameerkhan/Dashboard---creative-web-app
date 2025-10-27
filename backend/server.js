@@ -45,7 +45,7 @@ app.use(cors({
         }
         return callback(null, true);
     },
-    credentials: true,
+    credentials: true, // Important for cookies & Google Auth
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
 }));
 
@@ -63,7 +63,7 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production", // Must be HTTPS in production
+        secure: process.env.NODE_ENV === "production", // HTTPS required in prod
         maxAge: 24 * 60 * 60 * 1000, // 1 day
         sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
     },
