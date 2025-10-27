@@ -1,7 +1,8 @@
-// frontend/src/utils/api.js (Updated for Vercel + Render)
+// frontend/src/utils/api.js
 
-// ✅ API Base URL (dynamic using VITE_BACKEND_URL)
-const API_URL = import.meta.env.VITE_BACKEND_URL;
+// ✅ Add this environment-based API URL (works locally & on Vercel)
+export const API_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+
 
 // ================================
 // 🔑 Token helpers
