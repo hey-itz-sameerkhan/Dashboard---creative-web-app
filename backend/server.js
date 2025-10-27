@@ -1,4 +1,4 @@
-// backend/server.js
+// backend/server.js (Fixed for Production CORS & Sessions)
 
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -20,11 +20,11 @@ import notificationRoutes from "./routes/notificationRoutes.js";
 import taskRoutes from "./routes/taskRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 
-// Database connection
+// MongoDB connection
 mongoose
-    .connect(process.env.MONGO_URI)
-    .then(() => console.log("✅ MongoDB connected"))
-    .catch((err) => console.error("❌ MongoDB connection failed:", err));
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch((err) => console.error("❌ MongoDB connection failed:", err));
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -32,21 +32,22 @@ const __dirname = path.dirname(__filename);
 
 // --- CORS Setup ---
 const allowedOrigins = [
-    "http://localhost:5173", // Local dev
-    "http://127.0.0.1:5173", // Local dev alternate
-    process.env.FRONTEND_URL // Production frontend
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+  process.env.FRONTEND_URL // Production frontend
 ];
 
 app.use(cors({
-    origin: (origin, callback) => {
-        if (!origin) return callback(null, true); // Postman / curl requests
-        if (!allowedOrigins.includes(origin)) {
-            return callback(new Error("CORS policy does not allow access from this origin"), false);
-        }
-        return callback(null, true);
-    },
-    credentials: true, // Required for cookies & Google Auth
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true); // Allow Postman / curl
+    if (!allowedOrigins.includes(origin)) {
+      return callback(new Error("CORS policy does not allow access from this origin"), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true,
+  methods: ["GET","POST","PUT","DELETE","PATCH","OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
 // Middleware
@@ -57,16 +58,17 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 // --- Session for Passport ---
+app.set("trust proxy", 1); // Important if behind proxy (Render)
 app.use(session({
-    secret: process.env.SESSION_SECRET || "supersecretkey",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production", // HTTPS required in prod
-        maxAge: 24 * 60 * 60 * 1000, // 1 day
-        sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
-    },
+  secret: process.env.SESSION_SECRET || "supersecretkey",
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production", // HTTPS required
+    maxAge: 24 * 60 * 60 * 1000, // 1 day
+    sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax"
+  }
 }));
 
 // Passport initialization
@@ -83,20 +85,20 @@ app.use("/api/notifications", notificationRoutes);
 // Test route
 app.get("/", (req, res) => res.send("Server is running fine ✅"));
 
-// --- Handle 404
+// --- 404 Handler ---
 app.use((req, res, next) => {
-    const error = new Error(`Route Not Found - ${req.originalUrl}`);
-    res.status(404);
-    next(error);
+  const error = new Error(`Route Not Found - ${req.originalUrl}`);
+  res.status(404);
+  next(error);
 });
 
-// --- Global Error Handler
+// --- Global Error Handler ---
 app.use((err, req, res, next) => {
-    const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
-    res.status(statusCode).json({
-        message: err.message,
-        stack: process.env.NODE_ENV === "production" ? null : err.stack,
-    });
+  const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+  res.status(statusCode).json({
+    message: err.message,
+    stack: process.env.NODE_ENV === "production" ? null : err.stack
+  });
 });
 
 // Start server
