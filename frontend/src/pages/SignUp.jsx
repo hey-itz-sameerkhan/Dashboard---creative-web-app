@@ -18,34 +18,47 @@ export default function SignUp() {
 
   const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
 
+  // ----------------------------
+  // Manual signup handler
+  // ----------------------------
   const handleRegister = async (e) => {
     e.preventDefault();
     setLoading(true);
     showToast("Signing up...", "info");
 
     try {
-      const data = await signup(name, email.trim().toLowerCase(), password);
+      const data = await signup(
+        name.trim(),
+        email.trim().toLowerCase(),
+        password
+      );
 
-      if (data.token) {
+      if (data?.token && typeof data.token === "string") {
         await authLogin(data.token);
-        showToast("Account created and logged in successfully!", "success");
-        navigate("/"); // Navigate to Home after signup
+        showToast("Account created & logged in successfully!", "success");
+        navigate("/");
       } else {
-        throw new Error(data.message || "Registration failed.");
+        throw new Error(
+          data?.message || "Registration failed. Please try again."
+        );
       }
     } catch (err) {
-      const errorText =
-        err.message || "Registration failed due to a network error.";
-      console.error("Registration Error:", errorText);
-      showToast(errorText, "error");
+      console.error("Registration Error:", err.message);
+      const msg = err.message?.includes("Failed to fetch")
+        ? "Server is temporarily unavailable. Please try again later."
+        : err.message || "Registration failed. Please try again.";
+      showToast(msg, "error");
     } finally {
       setLoading(false);
     }
   };
 
+  // ----------------------------
+  // Google signup/login button
+  // ----------------------------
   const handleGoogleLogin = () => {
     localStorage.clear();
-    window.location.href = getGoogleAuthURL(); // ✅ Dynamic backend URL
+    window.location.href = getGoogleAuthURL(); // ✅ dynamic backend URL
   };
 
   return (
@@ -54,6 +67,7 @@ export default function SignUp() {
         <h1 className="text-4xl font-bold text-neon-pink mb-6 text-center neon-text">
           Sign Up
         </h1>
+
         <form onSubmit={handleRegister} className="flex flex-col gap-4">
           <input
             type="text"
@@ -96,12 +110,17 @@ export default function SignUp() {
               )}
             </button>
           </div>
+
           <button
             type="submit"
-            className="bg-neon-pink py-3 rounded-md text-black font-bold hover:scale-105 transition-all disabled:opacity-50"
+            className="bg-neon-pink py-3 rounded-md text-black font-bold hover:scale-105 transition-all disabled:opacity-50 flex justify-center"
             disabled={loading}
           >
-            {loading ? "Signing up..." : "Sign Up"}
+            {loading ? (
+              <span className="animate-pulse">⏳ Signing up...</span>
+            ) : (
+              "Sign Up"
+            )}
           </button>
         </form>
 

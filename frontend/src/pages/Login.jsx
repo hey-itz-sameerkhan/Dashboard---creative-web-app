@@ -22,10 +22,10 @@ export default function Login() {
     const token = params.get("token");
 
     if (token) {
-      const decodedToken = decodeURIComponent(token);
-
-      authLogin(decodedToken, true)
+      // ✅ directly use token, no need to decode
+      authLogin(token, true)
         .then(() => {
+          showToast("Google login successful!", "success");
           navigate("/", { replace: true });
         })
         .catch((err) => {
@@ -37,7 +37,7 @@ export default function Login() {
       const cleanUrl = window.location.origin + window.location.pathname;
       window.history.replaceState({}, document.title, cleanUrl);
     }
-  }, [authLogin, navigate]);
+  }, [authLogin, navigate, showToast]);
 
   // ----------------------------
   // Manual login handler
@@ -50,19 +50,21 @@ export default function Login() {
     try {
       const data = await manualLogin(email.trim().toLowerCase(), password);
 
-      if (data.token) {
+      if (data?.token && typeof data.token === "string") {
         await authLogin(data.token);
         showToast("Logged in successfully!", "success");
         navigate("/");
       } else {
         throw new Error(
-          data.message || "Invalid credentials or missing token."
+          data?.message || "Invalid credentials or missing token."
         );
       }
     } catch (err) {
-      const errorText = err.message || "Login failed due to a network error.";
-      console.error("Login Error:", errorText);
-      showToast(errorText, "error");
+      console.error("Login Error:", err.message);
+      const msg = err.message?.includes("Failed to fetch")
+        ? "Server is temporarily unavailable. Please try again later."
+        : err.message || "Login failed. Please try again.";
+      showToast(msg, "error");
     } finally {
       setLoading(false);
     }
@@ -73,7 +75,7 @@ export default function Login() {
   // ----------------------------
   const handleGoogleLogin = () => {
     localStorage.clear();
-    window.location.href = getGoogleAuthURL(); // ✅ Now uses dynamic backend URL
+    window.location.href = getGoogleAuthURL(); // ✅ uses backend URL dynamically
   };
 
   const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
@@ -84,6 +86,7 @@ export default function Login() {
         <h1 className="text-4xl font-bold text-neon-blue mb-6 text-center neon-text">
           Login
         </h1>
+
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
           <input
             type="email"
@@ -94,6 +97,7 @@ export default function Login() {
             className="p-3 rounded-md bg-gray-800 text-white border border-gray-700 focus:border-neon-blue outline-none"
             disabled={loading}
           />
+
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
@@ -117,19 +121,26 @@ export default function Login() {
               )}
             </button>
           </div>
+
           <button
             type="submit"
-            className="bg-neon-blue py-3 rounded-md text-black font-bold hover:scale-105 transition-all disabled:opacity-50"
+            className="bg-neon-blue py-3 rounded-md text-black font-bold hover:scale-105 transition-all disabled:opacity-50 flex justify-center"
             disabled={loading}
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? (
+              <span className="animate-pulse">⏳ Logging in...</span>
+            ) : (
+              "Login"
+            )}
           </button>
         </form>
+
         <div className="flex items-center my-4">
           <div className="flex-1 h-px bg-gray-600"></div>
           <span className="px-3 text-gray-400 text-sm">OR</span>
           <div className="flex-1 h-px bg-gray-600"></div>
         </div>
+
         <button
           onClick={handleGoogleLogin}
           className="w-full bg-white text-gray-800 font-semibold py-2 rounded-md flex items-center justify-center gap-2 hover:scale-105 transition-all disabled:opacity-50"
@@ -142,6 +153,7 @@ export default function Login() {
           />
           Continue with Google
         </button>
+
         <p className="mt-4 text-gray-400 text-center">
           Don't have an account?{" "}
           <Link to="/signup" className="text-neon-pink">
