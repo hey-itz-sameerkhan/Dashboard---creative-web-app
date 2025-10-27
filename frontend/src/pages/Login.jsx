@@ -1,11 +1,9 @@
-//frontend/src/pages/Login.jsx--
-
 import { useEffect, useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext.jsx";
-import { API_URL, login as manualLogin } from "../utils/api";
+import { getGoogleAuthURL, login as manualLogin } from "../utils/api";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -28,8 +26,6 @@ export default function Login() {
 
       authLogin(decodedToken, true)
         .then(() => {
-          // 💡 FIX 1: Google Login सफल होने पर, नए Home पेज पर नेविगेट करें।
-          // use replace: true ताकि यूज़र Login पेज पर वापस न जा सके
           navigate("/", { replace: true });
         })
         .catch((err) => {
@@ -41,7 +37,6 @@ export default function Login() {
       const cleanUrl = window.location.origin + window.location.pathname;
       window.history.replaceState({}, document.title, cleanUrl);
     }
-    // 'navigate' को dependency array में जोड़ा गया क्योंकि उसका उपयोग useEffect के अंदर हो रहा है।
   }, [authLogin, navigate]);
 
   // ----------------------------
@@ -53,13 +48,11 @@ export default function Login() {
     showToast("Logging in...", "info");
 
     try {
-      // 1. Call manual API login function
       const data = await manualLogin(email.trim().toLowerCase(), password);
 
       if (data.token) {
         await authLogin(data.token);
         showToast("Logged in successfully!", "success");
-        // 💡 FIX 2: Manual Login सफल होने पर, नए Home पेज पर नेविगेट करें।
         navigate("/");
       } else {
         throw new Error(
@@ -76,12 +69,11 @@ export default function Login() {
   };
 
   // ----------------------------
-  // Google login button (Unchanged)
+  // Google login button
   // ----------------------------
   const handleGoogleLogin = () => {
     localStorage.clear();
-    // ✅ FIX: Google Login URL को /api/auth/google पर बदलें (Unchanged)
-    window.location.href = `${API_URL}/api/auth/google`;
+    window.location.href = getGoogleAuthURL(); // ✅ Now uses dynamic backend URL
   };
 
   const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
@@ -151,7 +143,7 @@ export default function Login() {
           Continue with Google
         </button>
         <p className="mt-4 text-gray-400 text-center">
-          Don't have an account?
+          Don't have an account?{" "}
           <Link to="/signup" className="text-neon-pink">
             Sign Up
           </Link>
