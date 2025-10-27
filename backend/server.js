@@ -1,4 +1,4 @@
-// backend/server.js (Updated for production-ready CORS)
+// backend/server.js (Production-ready, CORS & session fixed)
 
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -32,13 +32,14 @@ const __dirname = path.dirname(__filename);
 
 // --- CORS Setup ---
 const allowedOrigins = [
-    "http://localhost:5173", // local dev frontend
-    "https://your-vercel-domain.vercel.app", // replace with your deployed Vercel frontend URL
+    "http://localhost:5173", // Local dev
+    "http://127.0.0.1:5173", // Local dev alternate
+    process.env.FRONTEND_URL // Production frontend (Vercel)
 ];
 
 app.use(cors({
     origin: (origin, callback) => {
-        if (!origin) return callback(null, true); // allow Postman, curl
+        if (!origin) return callback(null, true); // Postman / curl requests
         if (allowedOrigins.indexOf(origin) === -1) {
             return callback(new Error("CORS policy does not allow access from this origin"), false);
         }
@@ -62,8 +63,8 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production", // must be true in prod (HTTPS)
-        maxAge: 24 * 60 * 60 * 1000,
+        secure: process.env.NODE_ENV === "production", // Must be HTTPS in production
+        maxAge: 24 * 60 * 60 * 1000, // 1 day
         sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
     },
 }));
