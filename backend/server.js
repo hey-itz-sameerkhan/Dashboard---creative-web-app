@@ -1,4 +1,4 @@
-// backend/server.js (No changes needed, the code is well-structured and correct)
+// backend/server.js (Updated for production-ready CORS)
 
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -20,8 +20,7 @@ import notificationRoutes from "./routes/notificationRoutes.js";
 import taskRoutes from "./routes/taskRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 
-// Database 
-
+// Database connection
 mongoose
     .connect(process.env.MONGO_URI)
     .then(() => console.log("✅ MongoDB connected"))
@@ -32,17 +31,20 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // --- CORS Setup ---
-const allowedOrigins = ["http://localhost:5173", "http://127.0.0.1:5173"];
+const allowedOrigins = [
+    "http://localhost:5173", // local dev frontend
+    "https://your-vercel-domain.vercel.app", // replace with your deployed Vercel frontend URL
+];
+
 app.use(cors({
     origin: (origin, callback) => {
-        if (!origin) return callback(null, true);
+        if (!origin) return callback(null, true); // allow Postman, curl
         if (allowedOrigins.indexOf(origin) === -1) {
             return callback(new Error("CORS policy does not allow access from this origin"), false);
         }
         return callback(null, true);
     },
-    credentials: true, // Must be true for cookies (Google Auth)
-    // ⭐️ FIX: Added "PATCH" to the allowed methods
+    credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
 }));
 
@@ -60,8 +62,8 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 24 * 60 * 60 * 1000, // 1 day
+        secure: process.env.NODE_ENV === "production", // must be true in prod (HTTPS)
+        maxAge: 24 * 60 * 60 * 1000,
         sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
     },
 }));
@@ -75,7 +77,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/admin", adminRoutes);
-app.use("/api/notifications", notificationRoutes); 
+app.use("/api/notifications", notificationRoutes);
 
 // Test route
 app.get("/", (req, res) => res.send("Server is running fine ✅"));
@@ -99,4 +101,3 @@ app.use((err, req, res, next) => {
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
-
