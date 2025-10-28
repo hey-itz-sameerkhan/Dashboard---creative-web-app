@@ -1,5 +1,3 @@
-// backend/server.js — FINAL CORS + DEPLOYMENT SAFE VERSION
-
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -26,26 +24,29 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // --------------------
-// ✅ CORS Configuration
+// ✅ CORS Configuration - (FIXED & Simplified)
 // --------------------
+
+// 'process.env.FRONTEND_URL' should be set to your main Vercel production URL
 const allowedOrigins = [
   "http://localhost:5173",
   "http://127.0.0.1:5173",
-  "https://dashboard-creative-web-c9jyp9bev-sameer-khans-projects-50a9a7fe.vercel.app",
-  "https://dashboard-creative-web-n0fd0ipif-sameer-khans-projects-50a9a7fe.vercel.app",
-  "https://dashboard-creative-web-mpstuug18-sameer-khans-projects-50a9a7fe.vercel.app", // ✅ your current frontend
-  process.env.FRONTEND_URL,
+  process.env.FRONTEND_URL, // This must be set in Render Environment Variables!
 ];
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // allow Postman / curl / server-side
+      // 1. अगर 'origin' नहीं है (जैसे Postman/curl/server-side), तो allow करो
+      if (!origin) return callback(null, true);
+      
+      // 2. अगर origin allowed list में है, तो allow करो
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       } else {
-        console.warn("🚫 Blocked by CORS:", origin);
-        return callback(new Error("Not allowed by CORS"), false);
+        // 3. अगर allowed list में नहीं है, तो ब्लॉक करो
+        console.error("🚫 Blocked by CORS:", origin);
+        return callback(new Error(`Origin ${origin} Not allowed by CORS`), false);
       }
     },
     credentials: true,
@@ -72,8 +73,10 @@ app.use(
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
+      // 'secure: true' is CRITICAL for production (HTTPS)
       secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      // 'sameSite: none' is CRITICAL for cross-domain cookies in production
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", 
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     },
   })
