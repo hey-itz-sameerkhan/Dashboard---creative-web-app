@@ -1,4 +1,4 @@
-// backend/server.js — FINAL FIXED VERSION
+// backend/server.js — FINAL CORS + DEPLOYMENT SAFE VERSION
 
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -26,23 +26,27 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // --------------------
-// CORS Configuration
+// ✅ CORS Configuration
 // --------------------
 const allowedOrigins = [
   "http://localhost:5173",
   "http://127.0.0.1:5173",
-  "https://dashboard-creative-web-c9jyp9bev-sameer-khans-projects-50a9a7fe.vercel.app", // older vercel build
-  "https://dashboard-creative-web-n0fd0ipif-sameer-khans-projects-50a9a7fe.vercel.app", // new vercel build
-  process.env.FRONTEND_URL, // fallback (from .env)
+  "https://dashboard-creative-web-c9jyp9bev-sameer-khans-projects-50a9a7fe.vercel.app",
+  "https://dashboard-creative-web-n0fd0ipif-sameer-khans-projects-50a9a7fe.vercel.app",
+  "https://dashboard-creative-web-mpstuug18-sameer-khans-projects-50a9a7fe.vercel.app", // ✅ your current frontend
+  process.env.FRONTEND_URL,
 ];
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // allow Postman / curl
-      if (allowedOrigins.includes(origin)) return callback(null, true);
-      console.warn("🚫 Blocked CORS origin:", origin);
-      return callback(new Error("Not allowed by CORS"));
+      if (!origin) return callback(null, true); // allow Postman / curl / server-side
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        console.warn("🚫 Blocked by CORS:", origin);
+        return callback(new Error("Not allowed by CORS"), false);
+      }
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
@@ -60,7 +64,7 @@ app.use(express.static(path.join(__dirname, "public")));
 // --------------------
 // Session Setup
 // --------------------
-app.set("trust proxy", 1); // important for Render / HTTPS
+app.set("trust proxy", 1);
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "supersecretkey",
@@ -68,7 +72,7 @@ app.use(
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // true on render
+      secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     },
@@ -100,18 +104,18 @@ app.use("/api/notifications", notificationRoutes);
 // Base Route
 // --------------------
 app.get("/", (req, res) => {
-  res.send("🚀 Backend is live and secure with CORS + Sessions!");
+  res.send("🚀 Backend running — CORS fixed and verified!");
 });
 
 // --------------------
-// 404 + Global Error
+// Error Handlers
 // --------------------
 app.use((req, res, next) => {
   res.status(404).json({ message: `Route not found: ${req.originalUrl}` });
 });
 
 app.use((err, req, res, next) => {
-  console.error("🔥 Global Error:", err.message);
+  console.error("🔥 Error:", err.message);
   res.status(res.statusCode || 500).json({
     message: err.message || "Internal Server Error",
     stack: process.env.NODE_ENV === "production" ? null : err.stack,
