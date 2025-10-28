@@ -24,27 +24,38 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // --------------------
-// ✅ CORS Configuration - (FIXED & Simplified)
+// ✅ CRITICAL CORS Configuration - Dynamic Vercel Handling
 // --------------------
 
-// 'process.env.FRONTEND_URL' should be set to your main Vercel production URL
+// Base origins, including localhost and the main production Vercel URL
 const allowedOrigins = [
   "http://localhost:5173",
   "http://127.0.0.1:5173",
-  process.env.FRONTEND_URL, // This must be set in Render Environment Variables!
+  process.env.FRONTEND_URL, // e.g., https://dashboard-creative-web-app.vercel.app
 ];
+
+// RegEx to allow ANY Vercel preview domain (ending in .vercel.app)
+const VERCEL_REGEX = /^(https?:\/\/.*\.vercel\.app)$/i;
 
 app.use(
   cors({
     origin: function (origin, callback) {
       // 1. अगर 'origin' नहीं है (जैसे Postman/curl/server-side), तो allow करो
       if (!origin) return callback(null, true);
-      
+
       // 2. अगर origin allowed list में है, तो allow करो
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
-      } else {
-        // 3. अगर allowed list में नहीं है, तो ब्लॉक करो
+      }
+      
+      // 3. अगर origin Vercel Preview URL है, तो allow करो
+      if (VERCEL_REGEX.test(origin)) {
+        console.log(`✅ CORS Allowed (Vercel Preview): ${origin}`);
+        return callback(null, true);
+      }
+
+      // 4. अगर allowed list या RegEx में नहीं है, तो ब्लॉक करो
+      {
         console.error("🚫 Blocked by CORS:", origin);
         return callback(new Error(`Origin ${origin} Not allowed by CORS`), false);
       }
