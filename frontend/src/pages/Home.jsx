@@ -101,7 +101,7 @@ export default function Home() {
             wordBreak: "break-word",
           }}
         >
-          Welcome Back, {user?.name || "User"}!
+          Welcome, {user?.name || "User"}!
         </Typography>
 
         <Typography
@@ -109,7 +109,7 @@ export default function Home() {
           color="text.secondary"
           sx={{ mt: 1 }}
         >
-          Your <b>3D Avatar</b> is ready. Let's conquer today’s tasks!
+          Your <b>command center</b> is ready. Let's dominate the day in style!
         </Typography>
 
         <Typography
