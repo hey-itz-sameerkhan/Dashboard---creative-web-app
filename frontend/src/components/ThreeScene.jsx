@@ -10,12 +10,14 @@ import { Suspense, useEffect } from "react";
 const CACHE_BUST = "?v=20251029";
 
 // Preload the model to prevent flashes
-useGLTF.preload("/models/avatar.glb" + CACHE_BUST); // 👈 FIX APPLIED HERE
+useGLTF.preload("/models/avatar-final.glb" + CACHE_BUST); // 👈 FIX APPLIED HERE
 
 // 💡 3D Avatar Component
 function AvatarModel(props) {
   // useGLTF अब नया, Cache-Busted पाथ इस्तेमाल कर रहा है
-  const { scene, animations } = useGLTF("/models/avatar.glb" + CACHE_BUST); // 👈 FIX APPLIED HERE
+  const { scene, animations } = useGLTF(
+    "/models/avatar-final.glb" + CACHE_BUST
+  ); // 👈 FIX APPLIED HERE
 
   const { actions, mixer } = useAnimations(animations, scene); // CRITICAL FIX: Ensure animation starts when component mounts
   useEffect(() => {
