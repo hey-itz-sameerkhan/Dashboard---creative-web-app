@@ -5,6 +5,12 @@ import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
+  
+  // 💡 VERCEL STATIC ASSET FIX: Base URL '/' पर सेट किया गया है।
+  // यह सुनिश्चित करता है कि /models/avatar.glb जैसे पाथ Vercel पर सही ढंग से लोड हों, 
+  // जिससे "Unexpected token 'v'" (HTML Error) दूर हो जाए।
+  base: '/',
+
   // User ki optimizeDeps settings rakhi gayi hain.
   optimizeDeps: {
     exclude: ['stats-gl'], // Optional fix for three.js stats-gl issue
