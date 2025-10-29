@@ -5,15 +5,16 @@ import { OrbitControls, useAnimations, useGLTF } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Suspense, useEffect } from "react";
 
-// 💡 CLEANUP: Cache-Buster हटा दिया गया क्योंकि फ़ाइल का नाम बदला जा चुका है।
+// The new, clean path for the renamed GLB file.
+const MODEL_PATH = "/models/avatar-final.glb";
 
 // Preload the model to prevent flashes
-useGLTF.preload("/models/avatar-final.glb"); // ✅ CLEANED
+useGLTF.preload(MODEL_PATH);
 
 // 💡 3D Avatar Component
 function AvatarModel(props) {
-  // useGLTF अब केवल नए, साफ़ पाथ का उपयोग कर रहा है
-  const { scene, animations } = useGLTF("/models/avatar-final.glb"); // ✅ CLEANED
+  // Use the clean, new path
+  const { scene, animations } = useGLTF(MODEL_PATH);
 
   const { actions, mixer } = useAnimations(animations, scene);
 
@@ -24,7 +25,7 @@ function AvatarModel(props) {
         firstAction.play();
       }
     }
-  }, [actions, mixer]);
+  }, [actions, mixer]); // Apply scale and position settings
 
   scene.scale.set(1.5, 1.5, 1.5);
   scene.position.set(0, -1.5, 0);
