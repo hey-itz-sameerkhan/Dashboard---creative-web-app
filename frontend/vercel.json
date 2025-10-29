@@ -2,7 +2,7 @@
   "rewrites": [
     {
       
-      "source": "/((?!models|hdris|vite.svg|favicon.ico).*)",
+      "source": "/[^/.]+", 
       "destination": "/index.html"
     }
   ]
