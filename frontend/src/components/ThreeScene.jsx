@@ -1,21 +1,19 @@
-// frontend/src/components/ThreeScene.jsx - FINAL CLEAN CODE
+// ✅ frontend/src/components/ThreeScene.jsx (Final Fixed Version)
 
 import { Box, CircularProgress, useTheme } from "@mui/material";
 import { OrbitControls, useAnimations, useGLTF } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Suspense, useEffect } from "react";
 
-// The new, clean path for the renamed GLB file.
-const MODEL_PATH = "/models/avatar-final.glb";
+// ✅ Use absolute URL so Vercel always finds it correctly
+const MODEL_PATH = `${window.location.origin}/models/avatar-final.glb`;
 
-// Preload the model to prevent flashes
+// ✅ Preload model
 useGLTF.preload(MODEL_PATH);
 
-// 💡 3D Avatar Component
+// 💡 Avatar Component
 function AvatarModel(props) {
-  // Use the clean, new path
   const { scene, animations } = useGLTF(MODEL_PATH);
-
   const { actions, mixer } = useAnimations(animations, scene);
 
   useEffect(() => {
@@ -25,15 +23,16 @@ function AvatarModel(props) {
         firstAction.play();
       }
     }
-  }, [actions, mixer]); // Apply scale and position settings
+  }, [actions, mixer]);
 
+  // ✅ Apply positioning
   scene.scale.set(1.5, 1.5, 1.5);
   scene.position.set(0, -1.5, 0);
 
   return <primitive object={scene} {...props} />;
 }
 
-// 💡 Custom Controls Component (Rotation Fix)
+// 💡 Orbit Controls
 function Controls() {
   useFrame(() => {});
   return (
@@ -63,7 +62,6 @@ export default function ThreeScene() {
         boxShadow: "none",
       }}
     >
-           {" "}
       <Suspense
         fallback={
           <Box
@@ -75,11 +73,10 @@ export default function ThreeScene() {
               height: "100%",
             }}
           >
-                        <CircularProgress color="primary" />         {" "}
+            <CircularProgress color="primary" />
           </Box>
         }
       >
-               {" "}
         <Canvas
           camera={{ position: [0, 0, 5], fov: 50 }}
           style={{ width: "100%", height: "100%" }}
@@ -87,15 +84,13 @@ export default function ThreeScene() {
           flat
           dpr={[1, 2]}
         >
-                    <ambientLight intensity={0.8} />
-                    <pointLight position={[10, 10, 10]} intensity={1.5} />
-                    <directionalLight position={[-5, 5, 5]} intensity={1} />
-                    <AvatarModel />
-                    <Controls />       {" "}
+          <ambientLight intensity={0.8} />
+          <pointLight position={[10, 10, 10]} intensity={1.5} />
+          <directionalLight position={[-5, 5, 5]} intensity={1} />
+          <AvatarModel />
+          <Controls />
         </Canvas>
-             {" "}
       </Suspense>
-         {" "}
     </Box>
   );
 }

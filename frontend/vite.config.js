@@ -1,37 +1,55 @@
-import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vite';
-// FIX ZAROORI: Module resolution aur path aliases ke liye 'path' import kiya gaya hai.
-import path from 'path';
+import react from "@vitejs/plugin-react";
+import path from "path";
+import { defineConfig } from "vite";
 
+// ✅ FINAL VITE CONFIG — Perfect for Vercel + Three.js + Render backend
 export default defineConfig({
   plugins: [react()],
-  
-  // 💡 VERCEL STATIC ASSET FIX: Base URL '/' पर सेट किया गया है।
-  // यह सुनिश्चित करता है कि /models/avatar.glb जैसे पाथ Vercel पर सही ढंग से लोड हों, 
-  // जिससे "Unexpected token 'v'" (HTML Error) दूर हो जाए।
-  base: '/',
 
-  // User ki optimizeDeps settings rakhi gayi hain.
+  // 🧩 Critical for Vercel — ensures assets load from correct root path
+  base: "/",
+
+  // ⚡ Improves performance & avoids rebuild issues
   optimizeDeps: {
-    exclude: ['stats-gl'], // Optional fix for three.js stats-gl issue
+    exclude: ["stats-gl"], // Optional fix for three.js monitoring tools
   },
-  // FIX CRITICAL: 'resolve' configuration joda gaya hai taaki "./App.jsx" jaisi files
-  // aur future mein use hone waale path aliases ('@/') theek se resolve ho sakein.
+
+  // ✅ Path aliases — clean imports like "@/components/Sidebar"
   resolve: {
     alias: {
-      // 'src' folder ko '@' symbol se refer kiya ja sakta hai (module resolution fix)
-      '@': path.resolve(__dirname, './src'),
+      "@": path.resolve(__dirname, "./src"),
     },
   },
+
+  // 💻 Local development settings
   server: {
-    port: 5173, // Frontend port
-    // Backend se communication ke liye proxy setting waapas jodi gayi hai.
+    port: 5173,
+    // ✅ Proxy backend for local dev (Render not needed here)
     proxy: {
-      '/api': {
-        target: 'http://localhost:5000', // Backend port
+      "/api": {
+        target: "http://localhost:5000",
         changeOrigin: true,
         secure: false,
-      }
-    }
-  }
+      },
+    },
+  },
+
+  // 🏗️ Build optimization for Vercel static hosting
+  build: {
+    outDir: "dist",
+    sourcemap: false,
+    rollupOptions: {
+      output: {
+        // ✅ Keeps file names stable across rebuilds
+        assetFileNames: "assets/[name]-[hash][extname]",
+        chunkFileNames: "assets/[name]-[hash].js",
+        entryFileNames: "assets/[name]-[hash].js",
+      },
+    },
+  },
+
+  // 🧠 Silence known warnings from Three.js or fiber
+  define: {
+    "process.env": {},
+  },
 });
