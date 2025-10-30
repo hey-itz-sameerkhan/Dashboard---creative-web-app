@@ -1,4 +1,4 @@
-// ✅ backend/server.js — FINAL FIXED VERSION for Render + Vercel
+// ✅ backend/server.js — FINAL STABLE VERSION (Render + Vercel + Node 22 FIX)
 
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -34,13 +34,12 @@ const allowedOrigins = [
   process.env.FRONTEND_URL, // e.g. https://yourproject.vercel.app
 ];
 
-// Allow all preview deployments on vercel.app
 const VERCEL_REGEX = /^https:\/\/.*\.vercel\.app$/i;
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin) return callback(null, true); // Allow Postman / server-side
+      if (!origin) return callback(null, true);
       if (allowedOrigins.includes(origin) || VERCEL_REGEX.test(origin)) {
         return callback(null, true);
       }
@@ -71,7 +70,7 @@ app.use(
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // must be true on Render
+      secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 24 * 60 * 60 * 1000,
     },
@@ -107,17 +106,20 @@ app.get("/", (req, res) => {
 });
 
 // --------------------
-// ✅ Handle OPTIONS preflight (important for CORS stability)
+// ✅ Handle OPTIONS preflight (Express v5 safe version)
 // --------------------
-app.options("*", cors());
+app.options(/.*/, cors());
 
 // --------------------
-// ✅ Error Handlers
+// ✅ 404 Handler (Express v5 safe)
 // --------------------
-app.use((req, res, next) => {
+app.use((req, res) => {
   res.status(404).json({ message: `Route not found: ${req.originalUrl}` });
 });
 
+// --------------------
+// ✅ Error Handler
+// --------------------
 app.use((err, req, res, next) => {
   console.error("🔥 Error:", err.message);
   res.status(res.statusCode || 500).json({
