@@ -24,7 +24,7 @@ export default defineConfig({
   // 💻 Local development settings
   server: {
     port: 5173,
-    // ✅ Proxy backend for local dev (Render not needed here)
+    // ✅ Proxy backend for local dev (Render backend)
     proxy: {
       "/api": {
         target: "http://localhost:5000",
