@@ -1,3 +1,5 @@
+// ✅ backend/server.js — FINAL FIXED VERSION for Render + Vercel
+
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -12,7 +14,7 @@ import "./config/passport.js";
 dotenv.config();
 
 // --------------------
-// MongoDB connection
+// ✅ MongoDB Connection
 // --------------------
 mongoose
   .connect(process.env.MONGO_URI)
@@ -24,41 +26,26 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // --------------------
-// ✅ CRITICAL CORS Configuration - Dynamic Vercel Handling
+// ✅ CORS CONFIGURATION (Render + Vercel)
 // --------------------
-
-// Base origins, including localhost and the main production Vercel URL
 const allowedOrigins = [
   "http://localhost:5173",
   "http://127.0.0.1:5173",
-  process.env.FRONTEND_URL, // e.g., https://dashboard-creative-web-app.vercel.app
+  process.env.FRONTEND_URL, // e.g. https://yourproject.vercel.app
 ];
 
-// RegEx to allow ANY Vercel preview domain (ending in .vercel.app)
-const VERCEL_REGEX = /^(https?:\/\/.*\.vercel\.app)$/i;
+// Allow all preview deployments on vercel.app
+const VERCEL_REGEX = /^https:\/\/.*\.vercel\.app$/i;
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      // 1. अगर 'origin' नहीं है (जैसे Postman/curl/server-side), तो allow करो
-      if (!origin) return callback(null, true);
-
-      // 2. अगर origin allowed list में है, तो allow करो
-      if (allowedOrigins.includes(origin)) {
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true); // Allow Postman / server-side
+      if (allowedOrigins.includes(origin) || VERCEL_REGEX.test(origin)) {
         return callback(null, true);
       }
-      
-      // 3. अगर origin Vercel Preview URL है, तो allow करो
-      if (VERCEL_REGEX.test(origin)) {
-        console.log(`✅ CORS Allowed (Vercel Preview): ${origin}`);
-        return callback(null, true);
-      }
-
-      // 4. अगर allowed list या RegEx में नहीं है, तो ब्लॉक करो
-      {
-        console.error("🚫 Blocked by CORS:", origin);
-        return callback(new Error(`Origin ${origin} Not allowed by CORS`), false);
-      }
+      console.error("🚫 Blocked by CORS:", origin);
+      return callback(new Error(`Origin ${origin} not allowed by CORS`), false);
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
@@ -67,14 +54,14 @@ app.use(
 );
 
 // --------------------
-// Middleware
+// ✅ Core Middleware
 // --------------------
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 // --------------------
-// Session Setup
+// ✅ Session Setup (Render + HTTPS Safe)
 // --------------------
 app.set("trust proxy", 1);
 app.use(
@@ -84,23 +71,21 @@ app.use(
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      // 'secure: true' is CRITICAL for production (HTTPS)
-      secure: process.env.NODE_ENV === "production",
-      // 'sameSite: none' is CRITICAL for cross-domain cookies in production
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", 
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
+      secure: process.env.NODE_ENV === "production", // must be true on Render
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 24 * 60 * 60 * 1000,
     },
   })
 );
 
 // --------------------
-// Passport Setup
+// ✅ Passport Auth
 // --------------------
 app.use(passport.initialize());
 app.use(passport.session());
 
 // --------------------
-// Routes
+// ✅ Routes
 // --------------------
 import adminRoutes from "./routes/adminRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
@@ -115,14 +100,19 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/notifications", notificationRoutes);
 
 // --------------------
-// Base Route
+// ✅ Base Route
 // --------------------
 app.get("/", (req, res) => {
-  res.send("🚀 Backend running — CORS fixed and verified!");
+  res.send("🚀 Backend running — Render + Vercel CORS fixed & verified!");
 });
 
 // --------------------
-// Error Handlers
+// ✅ Handle OPTIONS preflight (important for CORS stability)
+// --------------------
+app.options("*", cors());
+
+// --------------------
+// ✅ Error Handlers
 // --------------------
 app.use((req, res, next) => {
   res.status(404).json({ message: `Route not found: ${req.originalUrl}` });
@@ -137,9 +127,9 @@ app.use((err, req, res, next) => {
 });
 
 // --------------------
-// Start Server
+// ✅ Start Server
 // --------------------
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () =>
-  console.log(`✅ Server running on port ${PORT} (${process.env.NODE_ENV})`)
-);
+app.listen(PORT, () => {
+  console.log(`✅ Server running on port ${PORT} (${process.env.NODE_ENV})`);
+});
