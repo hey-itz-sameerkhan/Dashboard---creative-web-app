@@ -2,9 +2,9 @@
   "version": 2,
   "builds": [
     {
-      "src": "frontend/package.json",
+      "src": "package.json",
       "use": "@vercel/static-build",
-      "config": { "distDir": "frontend/dist" }
+      "config": { "distDir": "dist" }
     }
   ],
   "routes": [
@@ -17,12 +17,8 @@
       "handle": "filesystem"
     },
     {
-      "src": "/(.*)\\.(glb|gltf|hdr|png|jpg|jpeg|svg|webp)",
-      "dest": "/frontend/public/$1.$2"
-    },
-    {
       "src": "/(.*)",
-      "dest": "/frontend/dist/index.html"
+      "dest": "/index.html"
     }
   ]
 }
