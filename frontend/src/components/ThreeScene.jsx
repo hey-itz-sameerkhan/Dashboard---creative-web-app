@@ -1,13 +1,12 @@
-// ✅ frontend/src/components/ThreeScene.jsx (Final Fixed Version for Vercel Assets)
+// ✅ frontend/src/components/ThreeScene.jsx (Final Fixed Version)
 
 import { Box, CircularProgress, useTheme } from "@mui/material";
 import { OrbitControls, useAnimations, useGLTF } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Suspense, useEffect } from "react";
 
-// ⚠️ FIX: Vercel पर 404 Error को हल करने के लिए Root-Relative पाथ का उपयोग करें
-// यह 'public/models/avatar-final.glb' को ठीक से ढूंढेगा।
-const MODEL_PATH = "/models/avatar-final.glb";
+// ✅ Use absolute URL so Vercel always finds it correctly
+const MODEL_PATH = `${window.location.origin}/models/avatar-final.glb`;
 
 // ✅ Preload model
 useGLTF.preload(MODEL_PATH);
@@ -24,8 +23,9 @@ function AvatarModel(props) {
         firstAction.play();
       }
     }
-  }, [actions, mixer]); // ✅ Apply positioning
+  }, [actions, mixer]);
 
+  // ✅ Apply positioning
   scene.scale.set(1.5, 1.5, 1.5);
   scene.position.set(0, -1.5, 0);
 
@@ -62,7 +62,6 @@ export default function ThreeScene() {
         boxShadow: "none",
       }}
     >
-           {" "}
       <Suspense
         fallback={
           <Box
@@ -74,11 +73,10 @@ export default function ThreeScene() {
               height: "100%",
             }}
           >
-                        <CircularProgress color="primary" />         {" "}
+            <CircularProgress color="primary" />
           </Box>
         }
       >
-               {" "}
         <Canvas
           camera={{ position: [0, 0, 5], fov: 50 }}
           style={{ width: "100%", height: "100%" }}
@@ -86,15 +84,13 @@ export default function ThreeScene() {
           flat
           dpr={[1, 2]}
         >
-                    <ambientLight intensity={0.8} />
-                    <pointLight position={[10, 10, 10]} intensity={1.5} />
-                    <directionalLight position={[-5, 5, 5]} intensity={1} />
-                    <AvatarModel />
-                    <Controls />       {" "}
+          <ambientLight intensity={0.8} />
+          <pointLight position={[10, 10, 10]} intensity={1.5} />
+          <directionalLight position={[-5, 5, 5]} intensity={1} />
+          <AvatarModel />
+          <Controls />
         </Canvas>
-             {" "}
       </Suspense>
-         {" "}
     </Box>
   );
 }
