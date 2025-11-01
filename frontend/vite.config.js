@@ -1,20 +1,21 @@
+// ✅ Import essentials
 import react from "@vitejs/plugin-react";
 import path from "path";
 import { defineConfig } from "vite";
 
-// ✅ FINAL VITE CONFIG — Perfect for Vercel + Three.js + Render backend
+// ✅ FINAL CONFIG — Works with Vercel + Render backend + Three.js (no 404 or black screen)
 export default defineConfig({
   plugins: [react()],
 
-  // 🧩 Critical for Vercel — ensures assets load from correct root path
-  base: "/",
+  // 🧩 CRITICAL FIX: use relative base path for static Vercel deployment
+  base: "./",
 
-  // ⚡ Improves performance & avoids rebuild issues
+  // ⚡ Optimization for faster builds
   optimizeDeps: {
-    exclude: ["stats-gl"], // Optional fix for three.js monitoring tools
+    exclude: ["stats-gl"], // Optional fix for Three.js tools
   },
 
-  // ✅ Path aliases — clean imports like "@/components/Sidebar"
+  // 💡 Aliases for clean imports (like "@/components/Sidebar")
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -24,8 +25,8 @@ export default defineConfig({
   // 💻 Local development settings
   server: {
     port: 5173,
-    // ✅ Proxy backend for local dev (Render backend)
     proxy: {
+      // 🔗 Local backend proxy (only works in dev)
       "/api": {
         target: "http://localhost:5000",
         changeOrigin: true,
@@ -34,13 +35,13 @@ export default defineConfig({
     },
   },
 
-  // 🏗️ Build optimization for Vercel static hosting
+  // 🏗️ Build optimization (for production)
   build: {
     outDir: "dist",
     sourcemap: false,
     rollupOptions: {
       output: {
-        // ✅ Keeps file names stable across rebuilds
+        // ✅ Keeps build files consistent & unique
         assetFileNames: "assets/[name]-[hash][extname]",
         chunkFileNames: "assets/[name]-[hash].js",
         entryFileNames: "assets/[name]-[hash].js",
@@ -48,7 +49,7 @@ export default defineConfig({
     },
   },
 
-  // 🧠 Silence known warnings from Three.js or fiber
+  // 🧠 Define process.env to silence Vite warnings
   define: {
     "process.env": {},
   },
