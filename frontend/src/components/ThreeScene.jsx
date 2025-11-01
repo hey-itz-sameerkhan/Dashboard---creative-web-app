@@ -1,31 +1,29 @@
-// ✅ frontend/src/components/ThreeScene.jsx (Final Fixed Version)
+// ✅ frontend/src/components/ThreeScene.jsx — FINAL UNIVERSAL FIX VERSION
 
 import { Box, CircularProgress, useTheme } from "@mui/material";
 import { OrbitControls, useAnimations, useGLTF } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Suspense, useEffect } from "react";
 
-// ✅ Use absolute URL so Vercel always finds it correctly
-const MODEL_PATH = `${window.location.origin}/models/avatar-final.glb`;
+// ✅ Model path — relative (works in localhost + Vercel)
+const MODEL_PATH = "/models/avatar-final.glb";
 
-// ✅ Preload model
+// ✅ Preload model once
 useGLTF.preload(MODEL_PATH);
 
 // 💡 Avatar Component
 function AvatarModel(props) {
   const { scene, animations } = useGLTF(MODEL_PATH);
-  const { actions, mixer } = useAnimations(animations, scene);
+  const { actions } = useAnimations(animations, scene);
 
   useEffect(() => {
     if (actions) {
       const firstAction = Object.values(actions)[0];
-      if (firstAction) {
-        firstAction.play();
-      }
+      if (firstAction) firstAction.play();
     }
-  }, [actions, mixer]);
+  }, [actions]);
 
-  // ✅ Apply positioning
+  // ✅ Model scale & position (adjust if needed)
   scene.scale.set(1.5, 1.5, 1.5);
   scene.position.set(0, -1.5, 0);
 
@@ -81,7 +79,6 @@ export default function ThreeScene() {
           camera={{ position: [0, 0, 5], fov: 50 }}
           style={{ width: "100%", height: "100%" }}
           gl={{ alpha: true }}
-          flat
           dpr={[1, 2]}
         >
           <ambientLight intensity={0.8} />
