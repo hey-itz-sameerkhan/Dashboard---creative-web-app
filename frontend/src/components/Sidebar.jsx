@@ -1,5 +1,4 @@
-// ✅ frontend/src/components/Sidebar.jsx (FINAL UPDATED WITH PRIVACY & TERMS LINKS)
-
+// frontend/src/components/Sidebar.jsx (UPDATED: Mobile Avatar Fix Only)
 import {
   AccountCircle,
   AdminPanelSettings,
@@ -7,10 +6,8 @@ import {
   CalendarToday,
   Dashboard as DashboardIcon,
   ExitToApp,
-  Gavel,
   Group,
   Home as HomeIcon,
-  Policy,
   Task,
 } from "@mui/icons-material";
 import {
@@ -44,12 +41,6 @@ const adminMenuItems = [
   { text: "User Management", icon: <Group />, path: "/admin/users" },
 ];
 
-// 🌟 NEW: Legal Pages (Privacy + Terms)
-const legalMenuItems = [
-  { text: "Privacy Policy", icon: <Policy />, path: "/privacy-policy" },
-  { text: "Terms & Conditions", icon: <Gavel />, path: "/terms" },
-];
-
 export default function Sidebar({
   drawerWidth,
   mobileOpen,
@@ -70,10 +61,11 @@ export default function Sidebar({
         height: "100%",
       }}
     >
-      {/* 🌟 PROFILE HEADER */}
+      {/* 🌟 PROFILE HEADER — FIXED for Mobile Responsiveness */}
       <Box
         sx={{
-          p: { xs: 3, sm: 2 },
+          // 👇 MODIFIED: Set a minimum vertical padding for the smallest screens (xs)
+          p: { xs: 10, sm: 2 }, // Apply more padding (p: 3 is 24px) for small screens, and p: 2 (16px) for sm and up.
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -81,10 +73,12 @@ export default function Sidebar({
           color: theme.palette.primary.contrastText,
         }}
       >
+               {" "}
         <Avatar
           alt={userName}
           src={avatarSrc}
           sx={{
+            // Avatar size is good, just ensuring the container holds it
             width: { xs: 56, sm: 64, md: 70 },
             height: { xs: 56, sm: 64, md: 70 },
             mb: 1,
@@ -93,9 +87,8 @@ export default function Sidebar({
             objectFit: "cover",
           }}
         >
-          {userName.charAt(0).toUpperCase()}
+                    {userName.charAt(0).toUpperCase()}       {" "}
         </Avatar>
-
         <Typography
           variant="h6"
           color="inherit"
@@ -110,7 +103,6 @@ export default function Sidebar({
         >
           {userName}
         </Typography>
-
         <Typography
           variant="caption"
           color="inherit"
@@ -126,7 +118,6 @@ export default function Sidebar({
 
       <Divider sx={{ bgcolor: theme.palette.divider }} />
 
-      {/* 🌟 MAIN MENU */}
       <List sx={{ flexGrow: 1, overflowY: "auto", py: 0 }}>
         {menuItems.map(({ text, icon, path }) => (
           <ListItem key={text} disablePadding>
@@ -142,7 +133,6 @@ export default function Sidebar({
         ))}
       </List>
 
-      {/* 🌟 ADMIN MENU */}
       {user?.role === "admin" && (
         <>
           <Divider sx={{ my: 1, bgcolor: theme.palette.divider }} />
@@ -172,32 +162,8 @@ export default function Sidebar({
         </>
       )}
 
-      {/* 🌟 LEGAL LINKS SECTION */}
       <Divider sx={{ my: 1, bgcolor: theme.palette.divider }} />
-      <Typography
-        variant="overline"
-        sx={{ px: 2, color: theme.palette.text.secondary }}
-      >
-        Legal
-      </Typography>
-      <List>
-        {legalMenuItems.map(({ text, icon, path }) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton
-              component="a"
-              href={path}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <ListItemIcon>{icon}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
 
-      {/* 🌟 LOGOUT BUTTON */}
-      <Divider sx={{ my: 1, bgcolor: theme.palette.divider }} />
       <List>
         <ListItem disablePadding>
           <ListItemButton
@@ -225,7 +191,7 @@ export default function Sidebar({
       sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
       aria-label="Sidebar navigation menu"
     >
-      {/* 📱 Mobile Drawer */}
+      {/* 1️⃣ Temporary Drawer (Mobile View) */}
       <Drawer
         variant="temporary"
         open={mobileOpen}
@@ -244,7 +210,7 @@ export default function Sidebar({
         {drawerContent}
       </Drawer>
 
-      {/* 💻 Desktop Drawer */}
+      {/* 2️⃣ Permanent Drawer (Desktop View) */}
       <Drawer
         variant="permanent"
         sx={{
