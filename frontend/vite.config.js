@@ -1,30 +1,27 @@
+// ✅ FINAL FIXED VITE CONFIG (Vercel + Three.js)
 import react from "@vitejs/plugin-react";
 import path from "path";
 import { defineConfig } from "vite";
 
-// ✅ FINAL VITE CONFIG — Perfect for Vercel + Three.js + Render backend
 export default defineConfig({
   plugins: [react()],
-
-  // 🧩 Critical for Vercel — ensures assets load from correct root path
   base: "/",
 
-  // ⚡ Improves performance & avoids rebuild issues
+  // ⚡ Add this line 👇 (forces Vite to include 3D assets)
+  assetsInclude: ["**/*.gltf", "**/*.glb", "**/*.hdr"],
+
   optimizeDeps: {
-    exclude: ["stats-gl"], // Optional fix for three.js monitoring tools
+    exclude: ["stats-gl"],
   },
 
-  // ✅ Path aliases — clean imports like "@/components/Sidebar"
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
   },
 
-  // 💻 Local development settings
   server: {
     port: 5173,
-    // ✅ Proxy backend for local dev (Render backend)
     proxy: {
       "/api": {
         target: "http://localhost:5000",
@@ -34,13 +31,11 @@ export default defineConfig({
     },
   },
 
-  // 🏗️ Build optimization for Vercel static hosting
   build: {
     outDir: "dist",
     sourcemap: false,
     rollupOptions: {
       output: {
-        // ✅ Keeps file names stable across rebuilds
         assetFileNames: "assets/[name]-[hash][extname]",
         chunkFileNames: "assets/[name]-[hash].js",
         entryFileNames: "assets/[name]-[hash].js",
@@ -48,7 +43,6 @@ export default defineConfig({
     },
   },
 
-  // 🧠 Silence known warnings from Three.js or fiber
   define: {
     "process.env": {},
   },

@@ -17,6 +17,10 @@
       "handle": "filesystem"
     },
     {
+      "src": "/(.*)\\.(glb|gltf|hdr|png|jpg|jpeg|svg|webp)",
+      "dest": "/$1.$2"
+    },
+    {
       "src": "/(.*)",
       "dest": "/index.html"
     }
