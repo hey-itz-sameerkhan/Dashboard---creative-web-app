@@ -1,4 +1,4 @@
-// frontend/src/components/Sidebar.jsx (MAXIMUM PADDING/SIZE FIX)
+// frontend/src/components/Sidebar.jsx (COMPLETE FINAL WORKING CODE)
 
 import {
   AccountCircle,
@@ -60,12 +60,13 @@ export default function Sidebar({
       sx={{
         display: "flex",
         flexDirection: "column",
-        height: "100%",
+        height: "100%", // Ensures the Box takes the full height of the Drawer
       }}
     >
-      {/* 🌟 PROFILE HEADER: for Avatar Padding and Size */}
+      {/* 🌟 PROFILE HEADER: Maximum Padding and Size Fix for Mobile */}
       <Box
         sx={{
+          // FIX 1: Maximum padding (p: 9 = 72px) for xs, preventing crop on mobile, but less padding for sm/desktop
           p: { xs: 9, sm: 7 },
           display: "flex",
           flexDirection: "column",
@@ -78,12 +79,12 @@ export default function Sidebar({
           alt={userName}
           src={avatarSrc}
           sx={{
-            // FIX 2: Increased Avatar size to 85px
+            // FIX 2: Increased Avatar size to 85px for mobile
             width: { xs: 85, sm: 80, md: 80 },
             height: { xs: 85, sm: 80, md: 80 },
-            mb: 1.5, // Bottom margin भी थोड़ा बढ़ाया
+            mb: 1.5,
             border: "3px solid white",
-            fontSize: "2.2rem", // Font size बढ़ा दिया
+            fontSize: "2.2rem",
             objectFit: "cover",
           }}
         >
@@ -99,7 +100,8 @@ export default function Sidebar({
 
       <Divider sx={{ bgcolor: theme.palette.divider }} />
 
-      {/* 🧭 NAVIGATION & ADMIN TOOLS: Takes remaining space, handles scrolling */}
+      {/* 🧭 NAVIGATION & ADMIN TOOLS: Takes remaining space, handles scrolling (Crucial FIX) */}
+      {/* FIX 3: This Box is flexGrow: 1, ensuring it handles all necessary scrolling, pushing Logout button down. */}
       <Box sx={{ flexGrow: 1, overflowY: "auto" }}>
         {/* Main Navigation List */}
         <List sx={{ py: 0 }}>
@@ -148,7 +150,7 @@ export default function Sidebar({
         )}
       </Box>
 
-      {/* 🚪 LOGOUT BUTTON: Positioned fixed at the absolute bottom */}
+      {/* 🚪 LOGOUT BUTTON: Fiexed at the absolute bottom (Outside flex-grow section) */}
       <Divider sx={{ my: 1, bgcolor: theme.palette.divider }} />
 
       <List disablePadding sx={{ mb: 1 }}>
@@ -191,11 +193,12 @@ export default function Sidebar({
           display: { xs: "block", sm: "none" },
           "& .MuiDrawer-paper": {
             boxSizing: "border-box",
-            // Width fix (Mobile only)
+            // FIX 4: Mobile width is responsive
             width: { xs: "80%", sm: drawerWidth },
             maxWidth: 280,
             bgcolor: theme.palette.background.paper,
-            height: "100vh",
+            // FIX 5: Changed 100vh to 100% to better handle mobile browser UI bars.
+            height: "100%",
           },
         }}
       >
@@ -211,7 +214,7 @@ export default function Sidebar({
             boxSizing: "border-box",
             width: drawerWidth,
             bgcolor: theme.palette.background.paper,
-            height: "100vh",
+            height: "100vh", // Desktop पर 100vh ठीक है
           },
         }}
         open
