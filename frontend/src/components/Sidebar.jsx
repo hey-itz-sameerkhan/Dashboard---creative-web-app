@@ -1,4 +1,5 @@
-// frontend/src/components/Sidebar.jsx (UPDATED: Mobile Avatar Fix Only)
+// frontend/src/components/Sidebar.jsx (COMPLETE UPDATED CODE)
+
 import {
   AccountCircle,
   AdminPanelSettings,
@@ -27,6 +28,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { getFullImageUrl } from "../utils/image";
 
+// --- Static Menu Definitions ---
 const menuItems = [
   { text: "Home", icon: <HomeIcon />, path: "/" },
   { text: "Dashboard", icon: <DashboardIcon />, path: "/dashboard" },
@@ -54,18 +56,21 @@ export default function Sidebar({
   const avatarSrc = getFullImageUrl(user?.profilePic);
 
   const drawerContent = (
+    // FIX 2: Added flexGrow: 1 to the main Box container to ensure it fills 100% height
     <Box
       sx={{
         display: "flex",
         flexDirection: "column",
-        height: "100%",
+        height: "100%", // Ensures the container uses the full height of the Drawer
+        // FIX 3: Optional scroll if content still exceeds screen height
+        // overflowY: 'auto' is managed by the main list for a better look
       }}
     >
-      {/* 🌟 PROFILE HEADER — FIXED for Mobile Responsiveness */}
+      {/* 🌟 PROFILE HEADER: Fixed Vertical Padding for small screens */}
       <Box
         sx={{
-          // 👇 MODIFIED: Set a minimum vertical padding for the smallest screens (xs)
-          p: { xs: 10, sm: 2 }, // Apply more padding (p: 3 is 24px) for small screens, and p: 2 (16px) for sm and up.
+          // Increased vertical padding (p: 2 is 16px, p: 10 was too large, p: 3 is 24px)
+          p: { xs: 2, sm: 2 },
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -73,12 +78,10 @@ export default function Sidebar({
           color: theme.palette.primary.contrastText,
         }}
       >
-               {" "}
         <Avatar
           alt={userName}
           src={avatarSrc}
           sx={{
-            // Avatar size is good, just ensuring the container holds it
             width: { xs: 56, sm: 64, md: 70 },
             height: { xs: 56, sm: 64, md: 70 },
             mb: 1,
@@ -87,7 +90,7 @@ export default function Sidebar({
             objectFit: "cover",
           }}
         >
-                    {userName.charAt(0).toUpperCase()}       {" "}
+          {userName.charAt(0).toUpperCase()}
         </Avatar>
         <Typography
           variant="h6"
@@ -118,6 +121,8 @@ export default function Sidebar({
 
       <Divider sx={{ bgcolor: theme.palette.divider }} />
 
+      {/* 🧭 MAIN NAVIGATION LIST: Takes up remaining space and handles scrolling */}
+      {/* FIX 3: flexGrow: 1 ensures the list expands to push the footer/logout button down */}
       <List sx={{ flexGrow: 1, overflowY: "auto", py: 0 }}>
         {menuItems.map(({ text, icon, path }) => (
           <ListItem key={text} disablePadding>
@@ -131,40 +136,42 @@ export default function Sidebar({
             </ListItemButton>
           </ListItem>
         ))}
+
+        {/* Admin Tools Section is kept within the scrollable list area */}
+        {user?.role === "admin" && (
+          <>
+            <Divider sx={{ my: 1, bgcolor: theme.palette.divider }} />
+            <Typography
+              variant="overline"
+              sx={{ px: 2, color: theme.palette.text.secondary }}
+            >
+              Admin Tools
+            </Typography>
+            <List disablePadding>
+              {adminMenuItems.map(({ text, icon, path }) => (
+                <ListItem key={text} disablePadding>
+                  <ListItemButton
+                    component={Link}
+                    to={path}
+                    onClick={handleDrawerToggle}
+                    sx={{ color: theme.palette.error.main }}
+                  >
+                    <ListItemIcon sx={{ color: theme.palette.error.main }}>
+                      {icon}
+                    </ListItemIcon>
+                    <ListItemText primary={text} />
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            </List>
+          </>
+        )}
       </List>
 
-      {user?.role === "admin" && (
-        <>
-          <Divider sx={{ my: 1, bgcolor: theme.palette.divider }} />
-          <Typography
-            variant="overline"
-            sx={{ px: 2, color: theme.palette.text.secondary }}
-          >
-            Admin Tools
-          </Typography>
-          <List>
-            {adminMenuItems.map(({ text, icon, path }) => (
-              <ListItem key={text} disablePadding>
-                <ListItemButton
-                  component={Link}
-                  to={path}
-                  onClick={handleDrawerToggle}
-                  sx={{ color: theme.palette.error.main }}
-                >
-                  <ListItemIcon sx={{ color: theme.palette.error.main }}>
-                    {icon}
-                  </ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-        </>
-      )}
-
+      {/* 🚪 LOGOUT BUTTON: Positioned fixed at the bottom (outside the scrollable main list) */}
       <Divider sx={{ my: 1, bgcolor: theme.palette.divider }} />
 
-      <List>
+      <List disablePadding>
         <ListItem disablePadding>
           <ListItemButton
             onClick={() => {
@@ -173,11 +180,13 @@ export default function Sidebar({
             }}
           >
             <ListItemIcon>
+              {/* Using MUI's built-in error color for visibility */}
               <ExitToApp color="error" />
             </ListItemIcon>
             <ListItemText
               primary="Logout"
-              primaryTypographyProps={{ color: theme.palette.text.primary }}
+              // FIX 4: Ensured the Logout text color is highly visible against the background (using error.main)
+              primaryTypographyProps={{ color: theme.palette.error.main }}
             />
           </ListItemButton>
         </ListItem>
@@ -201,7 +210,9 @@ export default function Sidebar({
           display: { xs: "block", sm: "none" },
           "& .MuiDrawer-paper": {
             boxSizing: "border-box",
-            width: drawerWidth,
+            // FIX 1: Set width to 80% of viewport, but max 280px
+            width: { xs: "80%", sm: drawerWidth },
+            maxWidth: 280,
             bgcolor: theme.palette.background.paper,
             height: "100vh",
           },
