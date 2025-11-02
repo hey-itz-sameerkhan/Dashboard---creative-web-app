@@ -28,6 +28,12 @@ const userSchema = new mongoose.Schema(
             type: String,
             default: "/uploads/profile/default-avatar.jpg", 
         },
+theme: {
+    type: String,
+    enum: ["light", "dark"], 
+    default: "light", 
+},
+
         role: {
             type: String,
             enum: ["basic", "admin"],
@@ -38,8 +44,6 @@ const userSchema = new mongoose.Schema(
         city: { type: String, trim: true, default: "" },
         state: { type: String, trim: true, default: "" },
         pinCode: { type: String, trim: true, default: "" },
-
-        // --- loginHistory aur lastLogin fields hata diye gaye hain ---
     },
     {
         timestamps: true,
