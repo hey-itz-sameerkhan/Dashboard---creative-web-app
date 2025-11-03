@@ -2,8 +2,8 @@
 <p align="center">
   <table>
     <tr>
-      <td align="left" width="120">
-        <img src="https://github.com/user-attachments/assets/704d3c48-abf9-42ba-8c0a-13b8597c8b26" alt="Logo" width="140" height="320">
+      <td align="left" width="250">
+        <img src="https://github.com/user-attachments/assets/704d3c48-abf9-42ba-8c0a-13b8597c8b26" alt="Logo" width="240" height="320">
       </td>
       <td align="left">
         <h1>🧑‍💻 Full-Stack Creative Task Management Dashboard</h1>
@@ -21,6 +21,7 @@
   </a>
   <img src="https://img.shields.io/github/license/hey-itz-sameerkhan/Dashboard---creative-web-app?style=for-the-badge" alt="License">
   <img src="https://img.shields.io/github/last-commit/hey-itz-sameerkhan/Dashboard---creative-web-app?style=for-the-badge" alt="Last Commit">
+  <img src="https://img.shields.io/badge/Made%20With-❤️%20React%20|%20Node.js%20|%20MongoDB%20|%20Express.js-blueviolet?style=for-the-badge" alt="Tech Stack">
   <img src="https://img.shields.io/github/stars/hey-itz-sameerkhan/Dashboard---creative-web-app?style=social" alt="GitHub Stars">
   <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge" alt="MIT License">
   <img src="https://img.shields.io/badge/Made%20with-%E2%9D%A4-red?style=for-the-badge" alt="Made with Love">
@@ -129,6 +130,6 @@ This project is licensed under the **MIT License** – see the [LICENSE](LICENSE
 
 <p align="center">
   <b>✨ Created with ❤️ by <a href="https://github.com/hey-itz-sameerkhan">Sameer Khan</a> ✨</b><br>
-  <img src="https://github.com/user-attachments/assets/ca7110c3-ad7d-426e-8b2f-17218f7223e5" width="200" height="350" alt="Mini Logo"><br>
+  <img src="https://github.com/user-attachments/assets/ca7110c3-ad7d-426e-8b2f-17218f7223e5" width="250" height="300" alt="Mini Logo"><br>
   <sub>© 2025 Dashboard – Creative Web App</sub>
 </p>
