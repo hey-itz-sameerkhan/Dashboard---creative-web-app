@@ -1,43 +1,58 @@
-<!-- PROJECT LOGO -->
+<!-- PROJECT HEADER -->
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/ca7110c3-ad7d-426e-8b2f-17218f7223e5" alt="Logo" width="250" height="320">
+  <table>
+    <tr>
+      <td align="left" width="120">
+        <img src="https://github.com/user-attachments/assets/704d3c48-abf9-42ba-8c0a-13b8597c8b26" alt="Logo" width="140" height="320">
+      </td>
+      <td align="left">
+        <h1>🧑‍💻 Full-Stack Creative Task Management Dashboard</h1>
+        <em>🚀 A next-generation, role-based, full-stack web application integrating advanced data visualization, 3D environments, and modern UI design. 🚀</em>
+      </td>
+    </tr>
+  </table>
 </p>
 
-<h1 align="center">🧑‍💻 Full-Stack Creative Task Management Dashboard</h1>
+---
 
 <p align="center">
-  <em>🚀 A next-generation, role-based, full-stack web application integrating advanced data visualization, 3D environments, and modern UI design. 🚀</em>
-</p>
-
-<p align="center">
-  <a href="https://dashboard-creative-web-app.vercel.app/"><img src="https://img.shields.io/badge/Live%20Demo-Click%20Here-brightgreen?style=for-the-badge" alt="Live Demo"></a>
+  <a href="https://dashboard-creative-web-app.vercel.app/">
+    <img src="https://img.shields.io/badge/Live%20Demo-Click%20Here-brightgreen?style=for-the-badge" alt="Live Demo">
+  </a>
   <img src="https://img.shields.io/github/license/hey-itz-sameerkhan/Dashboard---creative-web-app?style=for-the-badge" alt="License">
-  <img src="https://img.shields.io/badge/Made%20With-❤️%20React%20|%20Node.js%20|%20MongoDB-blueviolet?style=for-the-badge" alt="Tech Stack">
+  <img src="https://img.shields.io/github/last-commit/hey-itz-sameerkhan/Dashboard---creative-web-app?style=for-the-badge" alt="Last Commit">
+  <img src="https://img.shields.io/github/stars/hey-itz-sameerkhan/Dashboard---creative-web-app?style=social" alt="GitHub Stars">
+  <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge" alt="MIT License">
+  <img src="https://img.shields.io/badge/Made%20with-%E2%9D%A4-red?style=for-the-badge" alt="Made with Love">
 </p>
 
 ---
 
 ## ✨ Overview
 
-The **Full-Stack Creative Task Management Dashboard** is a powerful, role-based, task-management web app built with modern technologies.  
-It merges **functional excellence** (authentication, RBAC, analytics, exports) with **visual creativity** (3D scenes, smooth UI transitions, interactive charts).
+The **Full-Stack Creative Task Management Dashboard** merges **enterprise functionality** with **modern design** — combining:
+- 🔐 Secure authentication & admin controls  
+- 📊 Deep analytics & data visualization  
+- 🧩 3D graphics and smooth UI transitions  
+- 🧠 Role-based workflows for productivity  
 
-> 🔥 Built for professionals who want *data, design, and depth* — all in one dynamic dashboard.
+> 💡 Designed for creators & professionals who crave *power, precision, and polish* — all in one dashboard.
 
 ---
 
 ## 🚀 Live Demo
-🎯 **Try it out now:** [Dashboard – Creative Web App](https://dashboard-creative-web-app.vercel.app/)
+🎯 **Experience it now:** [Dashboard – Creative Web App](https://dashboard-creative-web-app.vercel.app/)
 
 ---
 
 ## 🧠 Project Philosophy
 
-This project bridges **enterprise-level functionality** with **creative web aesthetics**, offering:
-- Secure user & admin management.
-- Task scheduling, tracking, and analytics.
-- Advanced data visualization with 3D & chart integrations.
-- A smooth, delightful UX powered by Framer Motion animations.
+A fusion of **data intelligence** and **digital art** — this app transforms complex operations into an elegant user experience:
+
+- 🔸 Streamlined user + admin management  
+- 🔸 Dynamic task visualization with 3D motion  
+- 🔸 Analytical charts that reveal performance patterns  
+- 🔸 Minimal, futuristic, and immersive UI  
 
 ---
 
@@ -45,68 +60,75 @@ This project bridges **enterprise-level functionality** with **creative web aest
 
 | Layer | Technologies | Purpose |
 | :--- | :--- | :--- |
-| **Frontend** | ![React](https://skillicons.dev/icons?i=react,vite,tailwind,materialui,threejs) | UI, 3D rendering, responsive styling |
-| **Backend** | ![NodeJS](https://skillicons.dev/icons?i=nodejs,express,mongodb) | RESTful API, database & authentication |
-| **Auth & Security** | ![JWT](https://img.shields.io/badge/JWT-Auth-blue?logo=jsonwebtokens) ![bcrypt](https://img.shields.io/badge/Bcrypt-Hashing-orange) | Secure token-based authentication |
-| **Data Visualization** | ![Chart.js](https://img.shields.io/badge/Chart.js-Analytics-lightgrey) ![Nivo](https://img.shields.io/badge/Nivo-Visualization-orange) ![Recharts](https://img.shields.io/badge/Recharts-Reports-yellow) | Interactive & analytical reports |
-| **Animation** | ![Framer Motion](https://img.shields.io/badge/FramerMotion-Smooth%20Transitions-purple) | Component & route transitions |
-| **File Handling** | `multer`, `react-easy-crop` | Uploads & client-side cropping |
-| **Calendar** | `@fullcalendar` | Event & schedule management |
-| **Export Utility** | `jspdf`, `html2canvas` | Export reports to PDF |
+| **Frontend** | ![React](https://skillicons.dev/icons?i=react) ![Vite](https://skillicons.dev/icons?i=vite) ![Tailwind](https://skillicons.dev/icons?i=tailwind) ![MUI](https://skillicons.dev/icons?i=materialui) ![ThreeJS](https://skillicons.dev/icons?i=threejs) | Interactive UI, 3D rendering, responsive design |
+| **Backend** | ![NodeJS](https://skillicons.dev/icons?i=nodejs) ![Express](https://skillicons.dev/icons?i=express) ![MongoDB](https://skillicons.dev/icons?i=mongodb) ![Mongoose](https://img.shields.io/badge/Mongoose-ODM-green?style=flat) | RESTful API, database connection, server logic |
+| **Auth & Security** | ![JWT](https://img.shields.io/badge/JWT-Auth-blue?logo=jsonwebtokens) ![Passport](https://img.shields.io/badge/Passport.js-OAuth2-success) ![Bcrypt](https://img.shields.io/badge/Bcrypt-Hashing-orange) | Token-based authentication + Google OAuth |
+| **Data Visualization** | ![Chart.js](https://img.shields.io/badge/Chart.js-Visuals-lightgrey) ![Nivo](https://img.shields.io/badge/Nivo-Interactive-orange) ![Recharts](https://img.shields.io/badge/Recharts-Reports-yellow) | Advanced analytical charts |
+| **Animation** | ![Framer Motion](https://img.shields.io/badge/FramerMotion-Smooth-purple) | Page + component animations |
+| **File Handling** | ![Multer](https://img.shields.io/badge/Multer-Uploads-blue) ![React Easy Crop](https://img.shields.io/badge/react--easy--crop-Cropping-teal) | Secure uploads & client-side image cropping |
+| **Calendar** | ![FullCalendar](https://img.shields.io/badge/FullCalendar-Events-brightgreen) | Manage & visualize task schedules |
+| **Export Utility** | ![jsPDF](https://img.shields.io/badge/jsPDF-PDF%20Export-red) ![html2canvas](https://img.shields.io/badge/html2canvas-Snapshot-lightblue) | Export tables & dashboard reports |
 
 ---
 
-## 💼 Core Features
 
+## 🖼️ Preview  
 
-| Category | Description |
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/a517a841-a780-4423-a4bc-61f8b1f6704a" alt="Dashboard Preview" width="850" style="border-radius:10px; box-shadow:0 0 10px #aaa;">
+</p>
+
+---
+
+## 💼 Core Features  
+
+| 🧩 Category | 🌟 Description |
 | :--- | :--- |
-| 🔐 **Authentication** | Local + Google OAuth using JWT & Passport.js |
-| 👑 **RBAC** | Role-Based Access Control for Admin/User routes |
-| 🧾 **Task Management** | CRUD + Drag & Drop (Kanban via react-beautiful-dnd) |
-| 📅 **Calendar Scheduling** | FullCalendar for task & event timelines |
-| 📊 **Analytics Dashboard** | Nivo, Recharts & Chart.js for deep insights |
-| 🖼️ **3D Visualization** | Three.js & R3F scenes within React components |
-| 📂 **File Uploads** | multer for backend, react-easy-crop for client |
-| 📑 **Data Export** | jsPDF + html2canvas for downloadable reports |
+| 🔐 **Authentication** | Local + Google OAuth using **JWT & Passport.js** |
+| 👑 **RBAC (Access Control)** | Restricts routes for Admin/User roles dynamically |
+| 🧾 **Task Management** | Full CRUD + **Drag & Drop Kanban** using `react-beautiful-dnd` |
+| 📅 **Calendar Scheduling** | Integrated **FullCalendar** for task/event timelines |
+| 📊 **Analytics Dashboard** | Data visualization using **Nivo, Recharts & Chart.js** |
+| 🖼️ **3D Visualization** | Interactive 3D scenes via **Three.js & R3F** |
+| 📂 **File Uploads** | Backend: **multer**, Frontend: **react-easy-crop** |
+| 📑 **Data Export** | One-click **PDF export** using jsPDF + html2canvas |
+
+> ✨ Each feature built with **performance, elegance, and scalability** in mind.
 
 ---
 
 ## 🧱 Architecture Overview
 
-**Backend:** MVC architecture (Models, Controllers, Routes, Middleware)  
-- Models → `User.js`, `Task.js`, `Notification.js`  
-- Middleware → `auth.js`, `adminAuth.js`  
+🛠 **Backend (Node + Express + MongoDB)**  
+- **Models:** `User.js`, `Task.js`, `Notification.js`  
+- **Controllers:** Business logic for authentication & task control  
+- **Middleware:** `auth.js`, `adminAuth.js` for JWT and RBAC  
+- **Structure:** Pure MVC design  
 
-**Frontend:** Component-based React structure with protected routes  
-- Protected user dashboard & Admin-only routes  
-- Pages: `Home`, `Login`, `Signup`, `Dashboard`, `Tasks`, `Calendar`, `Charts`, `Account`, `Admin Management`
-
----
-
-## 🖼️ Preview
-
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/a517a841-a780-4423-a4bc-61f8b1f6704a" alt="Dashboard Preview" width="800">
-</p>
+🎨 **Frontend (React + Vite)**  
+- Component-based architecture  
+- Protected & Admin-only routes  
+- Pages: `Home`, `Login`, `Signup`, `Dashboard`, `Tasks`, `Calendar`, `Charts`, `Account`, `Admin Management`  
 
 ---
 
-## 📜 License
+
+## 📜 License  
 
 This project is licensed under the **MIT License** – see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 💖 Acknowledgements
+## 💖 Acknowledgements  
 
-> _"This application successfully integrates robust operational utility with advanced, next-generation visual design — transforming complex data into dynamic, actionable insights."_
+> _"A harmonious blend of performance, creativity, and technology — redefining how dashboards feel and function."_  
 
 ---
 
-## 🧡 Footer
+## 🧡 Footer  
 
 <p align="center">
   <b>✨ Created with ❤️ by <a href="https://github.com/hey-itz-sameerkhan">Sameer Khan</a> ✨</b><br>
+  <img src="https://github.com/user-attachments/assets/ca7110c3-ad7d-426e-8b2f-17218f7223e5" width="200" height="350" alt="Mini Logo"><br>
   <sub>© 2025 Dashboard – Creative Web App</sub>
 </p>
