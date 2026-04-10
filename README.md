@@ -19,7 +19,7 @@
   <a href="https://dashboard-creative-web-4v9ho8j1m-sameer-khans-projects-50a9a7fe.vercel.app/">
     <img src="https://img.shields.io/badge/Live%20Demo-Click%20Here-brightgreen?style=for-the-badge" alt="Live Demo">
   </a>
-  <img src="https://img.shields.io/github/license/hey-itz-sameerkhan/Dashboard---creative-web-app?style=for-the-badge" alt="License">
+  <!-- <img src="https://img.shields.io/github/license/hey-itz-sameerkhan/Dashboard---creative-web-app?style=for-the-badge" alt="License"> -->
   <img src="https://img.shields.io/github/last-commit/hey-itz-sameerkhan/Dashboard---creative-web-app?style=for-the-badge" alt="Last Commit">
   <img src="https://img.shields.io/badge/Made%20With-❤️%20React%20|%20Node.js%20|%20MongoDB%20|%20Express.js-blueviolet?style=for-the-badge" alt="Tech Stack">
   <img src="https://img.shields.io/github/stars/hey-itz-sameerkhan/Dashboard---creative-web-app?style=social" alt="GitHub Stars">
