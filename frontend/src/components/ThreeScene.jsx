@@ -1,24 +1,44 @@
-// ✅ frontend/src/components/ThreeScene.jsx (Final Confirmed Version)
+// frontend/src/components/ThreeScene.jsx — FINAL STABLE VERSION
 
-import { Box, CircularProgress, useTheme } from "@mui/material";
+import { Box, CircularProgress, Typography, useTheme } from "@mui/material";
 import { OrbitControls, useAnimations, useGLTF } from "@react-three/drei";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Suspense, useEffect } from "react";
+import { Canvas } from "@react-three/fiber";
+import { Suspense, useEffect, useState } from "react";
 
-// ✅ Model path (works in production now)
+// ✅ Correct path (must exist in public/models/)
 const MODEL_PATH = "/models/avatar-final.glb";
+
+// Preload safely
 useGLTF.preload(MODEL_PATH);
 
 function AvatarModel(props) {
-  const { scene, animations } = useGLTF(MODEL_PATH);
-  const { actions } = useAnimations(animations, scene);
+  const [error, setError] = useState(false);
+
+  let scene, animations;
+
+  try {
+    const gltf = useGLTF(MODEL_PATH);
+    scene = gltf.scene;
+    animations = gltf.animations;
+  } catch (err) {
+    console.error("❌ Model load failed:", err);
+    setError(true);
+  }
+
+  const { actions } = useAnimations(animations || [], scene);
 
   useEffect(() => {
-    const firstAction = actions && Object.values(actions)[0];
-    if (firstAction) firstAction.play();
+    if (actions) {
+      const firstAction = Object.values(actions)[0];
+      if (firstAction) firstAction.play();
+    }
   }, [actions]);
 
-  // ✅ Position + scale fix
+  // ❌ If error → show fallback instead of crash
+  if (error || !scene) {
+    return null;
+  }
+
   scene.scale.set(1.5, 1.5, 1.5);
   scene.position.set(0, -1.5, 0);
 
@@ -26,7 +46,6 @@ function AvatarModel(props) {
 }
 
 function Controls() {
-  useFrame(() => {});
   return (
     <OrbitControls
       enableDamping
@@ -50,21 +69,9 @@ function Lights() {
   );
 }
 
-function SceneCleaner() {
-  const { gl } = useThree();
-  useEffect(() => {
-    const handleContextLost = (e) => e.preventDefault();
-    const canvas = gl.domElement;
-    canvas.addEventListener("webglcontextlost", handleContextLost);
-    return () => {
-      canvas.removeEventListener("webglcontextlost", handleContextLost);
-    };
-  }, [gl]);
-  return null;
-}
-
 export default function ThreeScene() {
   const theme = useTheme();
+  const [hasError, setHasError] = useState(false);
 
   return (
     <Box
@@ -72,7 +79,6 @@ export default function ThreeScene() {
         width: "100%",
         height: "100%",
         borderRadius: theme.shape.borderRadius,
-        backgroundColor: "transparent",
         overflow: "hidden",
       }}
     >
@@ -87,20 +93,33 @@ export default function ThreeScene() {
               height: "100%",
             }}
           >
-            <CircularProgress color="primary" />
+            <CircularProgress />
           </Box>
         }
       >
-        <Canvas
-          camera={{ position: [0, 0, 5], fov: 50 }}
-          gl={{ preserveDrawingBuffer: true, antialias: true }}
-          style={{ width: "100%", height: "100%" }}
-        >
-          <Lights />
-          <AvatarModel />
-          <Controls />
-          <SceneCleaner />
-        </Canvas>
+        {!hasError ? (
+          <Canvas
+            camera={{ position: [0, 0, 5], fov: 50 }}
+            gl={{ antialias: true }}
+            onError={() => setHasError(true)}
+          >
+            <Lights />
+            <AvatarModel />
+            <Controls />
+          </Canvas>
+        ) : (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100%",
+              color: "gray",
+            }}
+          >
+            <Typography>⚠️ 3D Model failed to load</Typography>
+          </Box>
+        )}
       </Suspense>
     </Box>
   );
