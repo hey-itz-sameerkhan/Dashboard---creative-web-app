@@ -3,7 +3,7 @@
   <table>
     <tr>
       <td align="left" width="250">
-        <img src="https://github.com/user-attachments/assets/14ac8217-5d75-423f-8a79-7a6d26e2e2ef" alt="Logo" width="240" height="320">
+        <img src="https://github.com/hey-itz-sameerkhan/my-protfolio/blob/main/images/dashboard%20logo%20image.jpeg" alt="Logo" width="240" height="320">
       </td>
       <td align="left">
         <h1>🧑‍💻 Full-Stack Creative Task Management Dashboard</h1>
@@ -130,6 +130,6 @@ This project is licensed under the **MIT License** – see the [LICENSE](LICENSE
 
 <p align="center">
   <b>✨ Created with ❤️ by <a href="https://github.com/hey-itz-sameerkhan">Sameer Khan</a> ✨</b><br>
-  <img src="https://github.com/user-attachments/assets/022c7383-d917-42cb-8c42-a8486a230542" width="250" height="330" alt="Mini Logo"><br>
+  <img src="https://github.com/user-attachments/assets/14ac8217-5d75-423f-8a79-7a6d26e2e2ef" width="250" height="330" alt="Mini Logo"><br>
   <sub>© 2025 Dashboard – Creative Web App</sub>
 </p>
