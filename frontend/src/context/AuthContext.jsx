@@ -1,4 +1,5 @@
-// frontend/src/context/AuthContext.jsx
+// frontend/src/context/AuthContext.jsx — FINAL FIXED VERSION
+
 import React, {
   createContext,
   useCallback,
@@ -23,16 +24,18 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+
   const navigate = useNavigate();
   const location = useLocation();
+
   const { showToast } = useToast();
   const { confirm } = useConfirm();
 
-  // 🟢 Derived state: Whether user is authenticated or not
+  // ✅ Auth state
   const isAuthenticated = !!getToken() && !!user;
 
   // ----------------------------
-  // Logout function
+  // 🔴 Logout
   // ----------------------------
   const logout = useCallback(async () => {
     const result = await confirm(
@@ -42,9 +45,7 @@ export const AuthProvider = ({ children }) => {
     if (!result) return;
 
     clearToken();
-    localStorage.removeItem("userName");
-    localStorage.removeItem("userPic");
-    localStorage.removeItem("authProvider");
+    localStorage.clear();
     setUser(null);
 
     navigate("/login", { replace: true });
@@ -52,105 +53,100 @@ export const AuthProvider = ({ children }) => {
   }, [navigate, showToast, confirm]);
 
   // ----------------------------
-  // Fetch current user
+  // 🟢 Fetch current user (FIXED)
   // ----------------------------
-  const fetchUser = useCallback(
-    async (navigateAfterFetch = false, currentPath = location.pathname) => {
-      const token = getToken();
+  const fetchUser = useCallback(async () => {
+    const token = getToken();
 
-      if (!token) {
-        setIsLoading(false);
-        setUser(null);
-        return;
-      }
-
-      try {
-        const fetchedUser = await fetchCurrentUser();
-        const userForContext = {
-          ...fetchedUser,
-          id: fetchedUser._id,
-        };
-        setUser(userForContext);
-
-        // 🔹 Optional navigation after login
-        if (
-          navigateAfterFetch ||
-          currentPath === "/login" ||
-          currentPath === "/signup"
-        ) {
-          navigate("/", { replace: true });
-        }
-      } catch (err) {
-        console.error("❌ Fetch User failed (Token/API Error):", err);
-        clearToken();
-        setUser(null);
-
-        if (currentPath !== "/login" && currentPath !== "/signup") {
-          showToast(
-            "Session expired or authentication failed. Please log in.",
-            "error"
-          );
-          navigate("/login", { replace: true });
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [navigate, showToast, location.pathname]
-  );
-
-  // ----------------------------
-  // Login Handler
-  // ----------------------------
-  const login = useCallback(
-    async (token) => {
-      setToken(token);
-      await fetchUser(true);
-    },
-    [fetchUser]
-  );
-
-  // ----------------------------
-  // Initial Auth Check
-  // ----------------------------
-  useEffect(() => {
-    const googleToken = checkGoogleTokenInURL();
-    if (googleToken) {
-      console.log("✅ Google Token found in URL. Processing login.");
-      setToken(googleToken);
-      fetchUser(true, location.pathname);
+    if (!token) {
+      setUser(null);
+      setIsLoading(false);
       return;
     }
 
-    fetchUser(false, location.pathname);
-  }, [fetchUser, location.pathname]);
+    try {
+      const fetchedUser = await fetchCurrentUser();
+
+      setUser({
+        ...fetchedUser,
+        id: fetchedUser._id,
+      });
+    } catch (err) {
+      console.error("❌ Fetch User failed:", err);
+
+      clearToken();
+      setUser(null);
+
+      if (!location.pathname.includes("/login")) {
+        navigate("/login", { replace: true });
+        showToast("Session expired. Please login again.", "error");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }, [navigate, showToast, location.pathname]);
 
   // ----------------------------
-  // Refresh user (after profile update)
+  // 🔵 Login handler (FIXED)
+  // ----------------------------
+  const login = useCallback(
+    async (token) => {
+      if (!token) return;
+
+      setToken(token);
+
+      await fetchUser();
+
+      navigate("/", { replace: true });
+    },
+    [fetchUser, navigate]
+  );
+
+  // ----------------------------
+  // 🟡 Initial Auth Check (FIXED)
+  // ----------------------------
+  useEffect(() => {
+    const initAuth = async () => {
+      setIsLoading(true);
+
+      // ✅ Google login case
+      const googleToken = checkGoogleTokenInURL();
+
+      if (googleToken) {
+        console.log("✅ Google Token found");
+        setToken(googleToken);
+      }
+
+      await fetchUser();
+    };
+
+    initAuth();
+  }, [fetchUser]);
+
+  // ----------------------------
+  // 🔄 Refresh user
   // ----------------------------
   const refreshUser = useCallback(async () => {
     try {
-      await fetchUser(false);
-      showToast("Profile refreshed successfully!", "success");
+      await fetchUser();
+      showToast("Profile refreshed!", "success");
     } catch (err) {
-      console.error("❌ Refresh User failed:", err);
+      console.error("❌ Refresh failed:", err);
     }
   }, [fetchUser, showToast]);
 
   // ----------------------------
-  // Context value
+  // 📦 Context value
   // ----------------------------
-  const contextValue = {
+  const value = {
     user,
     isLoading,
-    isAuthenticated, // ✅ FIX: now provided
+    isAuthenticated,
     login,
     logout,
     refreshUser,
     setUser,
   };
 
-  return (
-    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
